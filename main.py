@@ -16,11 +16,12 @@ import re
 TELEGRAM_BOT_API_KEY = "884669112:AAGbOUDAiTOXyqkeJVOD29ZWc2zpNcTrMgA"
 NASA_API_KEY = "RG7fdE8let4UWinLzEHPhomXaVBTqToU1EInmwhi"
 
+
 def start(update: Update, context: CallbackContext):
     print(update)
     update.message.reply_text(
         "Hello %s, Welcome to the Bot.Please write\
-        /help to see the commands available."%update.message.chat.first_name)
+        /help to see the commands available." % update.message.chat.first_name)
 
 
 def help(update: Update, context: CallbackContext):
@@ -29,7 +30,7 @@ def help(update: Update, context: CallbackContext):
 	/help - To show this help again
 	/woof - To get an amazing dog pic, woof woof!!
 	/space - To get NASA's Astronomy Pic Of the Day
-	/quote - To get a random programming quote""")
+	/programming_quote - To get a random programming quote""")
 
 
 def unknown(update: Update, context: CallbackContext):
@@ -62,28 +63,39 @@ def bop(update: Update, context: CallbackContext):
     url = get_image_url()
     update.message.bot.send_photo(chat_id=update.message.chat.id, photo=url)
 
-def getQuote(update: Update, context: CallbackContext):
+
+def getProgrammingQuote(update: Update, context: CallbackContext):
     print(update)
-    response = requests.get('http://quotes.stormconsultancy.co.uk/random.json')
-    data = response.json()
+    data = requests.get('http://quotes.stormconsultancy.co.uk/random.json').json()
     context.bot.send_message(chat_id=update.effective_chat.id, text=data['quote'])
+
+def getProgrammingQuote(update: Update, context: CallbackContext):
+    print(update)
+    data = requests.get('https://api.quotable.io/random').json()
+    quote = data['content']
+    author = data['author']
+    message = "%s - %s"%(quote, author)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+
 
 def getAPOD(update: Update, context: CallbackContext):
     print(update)
-    response = requests.get('https://api.nasa.gov/planetary/apod?api_key='+NASA_API_KEY)
+    response = requests.get('https://api.nasa.gov/planetary/apod?api_key=' + NASA_API_KEY)
     data = response.json()
     title = data['title']
     explanation = data['explanation']
     imageUrl = data['hdurl']
     copyright = data['copyright']
-    message = "Title : %s\n\nExplanation : %s\n\nCopyright : %s"%(title, explanation, copyright)
+    message = "Title : %s\n\nExplanation : %s\n\nCopyright : %s" % (title, explanation, copyright)
     context.bot.send_photo(chat_id=update.effective_chat.id, photo=imageUrl, caption=message)
+
 
 def main():
     updater = Updater(TELEGRAM_BOT_API_KEY, use_context=True)
     updater.dispatcher.add_handler(CommandHandler('start', start))
     updater.dispatcher.add_handler(CommandHandler('help', help))
     updater.dispatcher.add_handler(CommandHandler('woof', bop))
+    updater.dispatcher.add_handler(CommandHandler('programming_quote', getProgrammingQuote))
     updater.dispatcher.add_handler(CommandHandler('quote', getQuote))
     updater.dispatcher.add_handler(CommandHandler('space', getAPOD))
     updater.dispatcher.add_handler(MessageHandler(Filters.command, unknown))  # Filters out unknown commands
