@@ -30,6 +30,7 @@ def help(update: Update, context: CallbackContext):
 	/help - To show this help again
 	/woof - To get an amazing dog pic, woof woof!!
 	/space - To get NASA's Astronomy Pic Of the Day
+	/quote - To get a random quote
 	/programming_quote - To get a random programming quote""")
 
 
@@ -69,7 +70,7 @@ def getProgrammingQuote(update: Update, context: CallbackContext):
     data = requests.get('http://quotes.stormconsultancy.co.uk/random.json').json()
     context.bot.send_message(chat_id=update.effective_chat.id, text=data['quote'])
 
-def getProgrammingQuote(update: Update, context: CallbackContext):
+def getQuote(update: Update, context: CallbackContext):
     print(update)
     data = requests.get('https://api.quotable.io/random').json()
     quote = data['content']
