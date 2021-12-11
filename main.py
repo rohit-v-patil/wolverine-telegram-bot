@@ -11,6 +11,9 @@ logger = logging.getLogger(__name__)
 
 TELEGRAM_BOT_API_KEY = "884669112:AAGbOUDAiTOXyqkeJVOD29ZWc2zpNcTrMgA"
 
+def error(update, context):
+    logger.warning('Update "%s" caused error "%s"', update, context.error)
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry something went wrong!!😶")
 
 def main():
     updater = Updater(TELEGRAM_BOT_API_KEY, use_context=True)
@@ -25,6 +28,8 @@ def main():
 
     # Filters out unknown messages.
     updater.dispatcher.add_handler(MessageHandler(Filters.text, commands.unknown_text))
+
+    updater.dispatcher.add_error_handler(error)
 
     updater.start_polling()
     logger.info('Started....')
