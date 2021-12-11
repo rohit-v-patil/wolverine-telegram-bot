@@ -34,13 +34,11 @@ def help(update: Update, context: CallbackContext):
 
 def unknown(update: Update, context: CallbackContext):
     print(update)
-
     update.message.reply_text("Sorry '%s' is not a valid command" % update.message.text)
 
 
 def unknown_text(update: Update, context: CallbackContext):
     print(update)
-
     update.message.reply_text("You said '%s', but I am not sure what that means, sorry :(" % update.message.text)
 
 
@@ -61,20 +59,17 @@ def get_image_url():
 
 def bop(update: Update, context: CallbackContext):
     print(update)
-
     url = get_image_url()
     update.message.bot.send_photo(chat_id=update.message.chat.id, photo=url)
 
 def getQuote(update: Update, context: CallbackContext):
     print(update)
-
     response = requests.get('http://quotes.stormconsultancy.co.uk/random.json')
     data = response.json()
     context.bot.send_message(chat_id=update.effective_chat.id, text=data['quote'])
 
 def getAPOD(update: Update, context: CallbackContext):
     print(update)
-
     response = requests.get('https://api.nasa.gov/planetary/apod?api_key='+NASA_API_KEY)
     data = response.json()
     title = data['title']
